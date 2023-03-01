@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ProAtividade.API.Models;
 
 namespace ProAtividade.API.Controllers
 {
@@ -7,28 +8,42 @@ namespace ProAtividade.API.Controllers
     [ApiController]
     public class AtividadeController : ControllerBase
     {
-        [HttpGet]
-        public string Get()
+        public IEnumerable<Atividade> Atividades = new List<Atividade>()
         {
-            return "Primeiro método get"; 
+            new Atividade(1),
+            new Atividade(2),
+            new Atividade(3)
+        };
+
+        [HttpGet]
+        public IEnumerable<Atividade> Get()
+        {
+            return Atividades; 
+        }
+        
+        [HttpGet("{id}")]
+        public Atividade Get(int id)
+        {
+            return Atividades.FirstOrDefault(atividade => atividade.Id == id); 
         }
 
         [HttpPost]
-        public string Post()
+        public IEnumerable<Atividade> Post(Atividade atividade)
         {
-            return "Primeiro método post";
+            return Atividades.Append(atividade); 
         }
 
-        [HttpPut]
-        public string Put()
+        [HttpPut("{id}")]
+        public Atividade Put(int id, Atividade atividade)
         {
-            return "Primeiro método put";
+            atividade.Id += 1;
+            return atividade;
         }
 
-        [HttpDelete]
-        public string Delete()
+        [HttpDelete("{id}")]
+        public string Delete(int id)
         {
-            return "Primeiro método delete";
+            return $"Primeiro método delete com id: {id}";
         }
     }
 }
