@@ -1,6 +1,10 @@
 ﻿namespace ProAtividade.API.Models
 {
-    public class Prioridade
+    public enum Prioridade
     {
+        NaoDefinida, 
+        Baixa,
+        Normal, 
+        Alta
     }
 }

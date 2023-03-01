@@ -1,6 +1,14 @@
+using Microsoft.EntityFrameworkCore;
+using ProAtividade.API.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+var mySqlConnection = builder.Configuration.GetConnectionString("DataContext"); // Connection Database
+builder.Services.AddDbContext<DataContext>
+    (
+        options => options.UseMySql(mySqlConnection, ServerVersion.AutoDetect(mySqlConnection))
+    ); 
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
