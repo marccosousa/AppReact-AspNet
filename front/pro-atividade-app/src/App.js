@@ -2,35 +2,50 @@ import {useEffect, useState } from 'react';
 import './App.css';
 import AtividadeForm from './components/AtividadeForm'
 import AtividadeLista from './components/AtividadeLista';
+import api from './api/atividade'
 
 function App() {
 
   const [atividades, setAtividades] = useState([]);
   const [atividade, setAtividade] = useState({id: 0});
-  const [index, setIndex] = useState(0); 
 
-  useEffect(() => {
-    atividades.length <= 0 ? setIndex(1) : setIndex(Math.max.apply(Math, atividades.map(item => item.id)) + 1); 
-  }, [atividades])
-
-  function addAtividade(ativ) {
-        setAtividades([...atividades, {...ativ, id: index }]);        
+  const pegarTodasAtividades = async () => {
+      const response = await api.get('atividade'); 
+      return response.data; 
   }
 
-  function deleteAtividade(id) {
-        const atividadesFiltradas = atividades.filter(ativ => ativ.id !== id); 
-        setAtividades([...atividadesFiltradas]); 
+  useEffect(() => {
+      const getAtividades = async () => {
+          const todasAtividades = await pegarTodasAtividades(); 
+          if (todasAtividades) setAtividades(todasAtividades); 
+      }
+      getAtividades(); 
+  }, [])
+  
+  const addAtividade = async (ativ) => {
+      const response = await api.post('atividade', ativ); 
+      setAtividades([...atividades, response.data]);        
+  }
+
+  const deleteAtividade = async (id) => {
+        if (await api.delete(`atividade/${id}`)) {
+          const atividadesFiltradas = atividades.filter((ativ) => ativ.id !== id);
+          setAtividades([...atividadesFiltradas]); 
+        }                     
   }
 
   function pegarAtividade(id) {
-        const atividade = atividades.filter(ativ => ativ.id === id)
+        const atividade = atividades.filter((ativ) => ativ.id === id)
         setAtividade(atividade[0]); 
   }
 
-  function atualizarAtividade(ativ) {
-      setAtividades(atividades.map(item => item.id === ativ.id ? ativ : item)); 
+  const atualizarAtividade = async (ativ) => {
+      const response = await api.put(`atividade/${ativ.id}`, ativ);
+      const { id } = response.data; 
+      setAtividades(atividades.map((item) => item.id === id ? response.data : item)); 
       setAtividade({id: 0}); 
   }
+  
 
   function cancelarAtividade() {
       setAtividade({id: 0}); 
