@@ -9,11 +9,16 @@ function App() {
 
   const [atividades, setAtividades] = useState([]);
   const [atividade, setAtividade] = useState({id: 0});
-  const [show, setShow] = useState(false);
+  const [showAtividadeModal, setShowAtividadeModal] = useState(false);
  
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const handleAtividadeModal = () => {
+    setShowAtividadeModal(!showAtividadeModal);
+  }
 
+  const novaAtividade = () => {
+    setAtividade({id: 0});
+    handleAtividadeModal();
+  }
   const pegarTodasAtividades = async () => {
       const response = await api.get('atividade'); 
       return response.data; 
@@ -29,7 +34,8 @@ function App() {
   
   const addAtividade = async (ativ) => {
       const response = await api.post('atividade', ativ); 
-      setAtividades([...atividades, response.data]);        
+      setAtividades([...atividades, response.data]);
+      handleAtividadeModal();         
   }
 
   const deleteAtividade = async (id) => {
@@ -42,6 +48,7 @@ function App() {
   function pegarAtividade(id) {
         const atividade = atividades.filter((ativ) => ativ.id === id)
         setAtividade(atividade[0]); 
+        handleAtividadeModal(); 
   }
 
   const atualizarAtividade = async (ativ) => {
@@ -49,18 +56,20 @@ function App() {
       const { id } = response.data; 
       setAtividades(atividades.map((item) => item.id === id ? response.data : item)); 
       setAtividade({id: 0}); 
+      handleAtividadeModal(); 
   }
   
 
   function cancelarAtividade() {
       setAtividade({id: 0}); 
+      handleAtividadeModal(); 
   }
   
   return (
     <>
       <div className="d-flex justify-content-between align-items-end mt-2 pb-3 border-bottom border-1">
           <h1 className="m-0 p-0">Atividade {atividade.id !== 0 ? atividade.id: ""}</h1>  
-          <Button variant="outline-secondary" onClick={handleShow}>
+          <Button variant="outline-secondary" onClick={novaAtividade}>
               <i className="fas fa-plus"></i>
           </Button>
       </div>
@@ -72,7 +81,7 @@ function App() {
           pegarAtividade = {pegarAtividade}
       />
 
-      <Modal show={show} onHide={handleClose}>
+      <Modal show={showAtividadeModal} onHide={handleAtividadeModal}>
         <Modal.Header closeButton>
           <Modal.Title>
                 <h1 className="m-0 p-0">Atividade {atividade.id !== 0 ? atividade.id: ""}</h1> 

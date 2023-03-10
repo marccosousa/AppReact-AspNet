@@ -103,12 +103,21 @@ export default function AtividadeForm(props) {
                 {
                     atividade.id === 0 ? 
                     (
-                    <button 
-                        type="submit" 
-                        className="btn btn-outline-secondary me-2">
-                        <i className="fas fa-plus me-1"></i>
-                        Atividade
-                    </button>
+                    <>
+                        <button 
+                            type="submit" 
+                            className="btn btn-outline-success me-2">
+                            <i className="fas fa-plus me-1"></i>
+                            Salvar
+                        </button>
+                        <button 
+                            type="submit" 
+                            className="btn btn-outline-warning me-2" 
+                            onClick={handleCancelar}>
+                            <i className="fas fa-plus me-1"></i>
+                            Cancelar
+                        </button> 
+                    </>
                     )
                     :
                     (
