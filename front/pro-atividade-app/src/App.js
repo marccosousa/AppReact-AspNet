@@ -1,5 +1,6 @@
 import {useEffect, useState } from 'react';
 import './App.css';
+import {Button, Modal} from 'react-bootstrap'
 import AtividadeForm from './components/AtividadeForm'
 import AtividadeLista from './components/AtividadeLista';
 import api from './api/atividade'
@@ -8,6 +9,10 @@ function App() {
 
   const [atividades, setAtividades] = useState([]);
   const [atividade, setAtividade] = useState({id: 0});
+  const [show, setShow] = useState(false);
+ 
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
   const pegarTodasAtividades = async () => {
       const response = await api.get('atividade'); 
@@ -53,18 +58,37 @@ function App() {
   
   return (
     <>
-      <AtividadeForm
-          addAtividade = {addAtividade}
-          atividadeEscolhida = {atividade}
-          atividades = {atividades}
-          atualizarAtividade = {atualizarAtividade}
-          cancelarAtividade = {cancelarAtividade}
-      />
+      <div className="d-flex justify-content-between align-items-end mt-2 pb-3 border-bottom border-1">
+          <h1 className="m-0 p-0">Atividade {atividade.id !== 0 ? atividade.id: ""}</h1>  
+          <Button variant="outline-secondary" onClick={handleShow}>
+              <i className="fas fa-plus"></i>
+          </Button>
+      </div>
+
+      
       <AtividadeLista
           atividades = {atividades}
           deleteAtividade = {deleteAtividade}
           pegarAtividade = {pegarAtividade}
       />
+
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>
+                <h1 className="m-0 p-0">Atividade {atividade.id !== 0 ? atividade.id: ""}</h1> 
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <AtividadeForm
+              addAtividade = {addAtividade}
+              atividadeEscolhida = {atividade}
+              atividades = {atividades}
+              atualizarAtividade = {atualizarAtividade}
+              cancelarAtividade = {cancelarAtividade}
+          />
+        </Modal.Body>
+        
+      </Modal>
     </>
   );
 }
