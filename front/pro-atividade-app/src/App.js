@@ -10,9 +10,22 @@ function App() {
   const [atividades, setAtividades] = useState([]);
   const [atividade, setAtividade] = useState({id: 0});
   const [showAtividadeModal, setShowAtividadeModal] = useState(false);
+  const [smShowConfirmModal, setSmShowConfirmModal] = useState(false);
  
   const handleAtividadeModal = () => {
     setShowAtividadeModal(!showAtividadeModal);
+  }
+
+  const handleConfirmModal = (id) => {
+    if(id !== 0 & id !== undefined) {
+      const atividade = atividades.filter((ativ) => ativ.id === id)
+      setAtividade(atividade[0]);
+    }
+    else {
+      setAtividade({id: 0}); 
+    }
+    
+    setSmShowConfirmModal(!smShowConfirmModal); 
   }
 
   const novaAtividade = () => {
@@ -39,6 +52,7 @@ function App() {
   }
 
   const deleteAtividade = async (id) => {
+        handleConfirmModal(0); 
         if (await api.delete(`atividade/${id}`)) {
           const atividadesFiltradas = atividades.filter((ativ) => ativ.id !== id);
           setAtividades([...atividadesFiltradas]); 
@@ -77,8 +91,8 @@ function App() {
       
       <AtividadeLista
           atividades = {atividades}
-          deleteAtividade = {deleteAtividade}
           pegarAtividade = {pegarAtividade}
+          handleConfirmModal = {handleConfirmModal}
       />
 
       <Modal show={showAtividadeModal} onHide={handleAtividadeModal}>
@@ -95,8 +109,32 @@ function App() {
               atualizarAtividade = {atualizarAtividade}
               cancelarAtividade = {cancelarAtividade}
           />
-        </Modal.Body>
-        
+        </Modal.Body>        
+      </Modal>
+
+      <Modal show={smShowConfirmModal}
+             size = 'sm'>
+        <Modal.Header closeButton>
+          <Modal.Title>
+                Excluindo a atividade {' '}
+                Atividade {atividade.id !== 0 ? atividade.id: ""}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+                Tem certeza que deseja excluir a atividade {atividade.id}?
+        </Modal.Body>  
+        <Modal.Footer>
+                <button className="btn btn-outline-success me-2"
+                        onClick={() => deleteAtividade(atividade.id)}>
+                      <i className="fas fa-check me-2"></i>
+                      Sim
+                </button>
+                <button className="btn btn-outline-danger me-2"
+                        onClick={() => handleConfirmModal(0)}>
+                      <i className="fas fa-times me-2"></i>
+                      Não
+                </button>    
+        </Modal.Footer>      
       </Modal>
     </>
   );
