@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Schema;
 
 namespace ProAtividade.Domain.Services
 {
@@ -33,33 +34,83 @@ namespace ProAtividade.Domain.Services
                     return model; 
                 }
             }
-
             return null; 
         }
 
-        public Task<Atividade> Atualizar(Atividade model)
+        public async Task<Atividade> AtualizarAtividade(Atividade model)
         {
-            throw new NotImplementedException();
+            if (model.DataConclusao != null)
+            {
+                throw new Exception("Não pode atualizar uma atividade já concluída"); 
+            }
+
+            if (await _atividadeRepo.PegarPorIdAsync(model.Id) == null)
+            {
+                _atividadeRepo.Atualizar(model);
+
+                if (await _atividadeRepo.SalvarMudancasAsync())
+                {
+                    return model;
+                }
+            }
+            return null; 
         }
 
-        public Task<bool> ConcluirAtividade(int AtividadeId)
+        public async Task<bool> ConcluirAtividade(Atividade model)
         {
-            throw new NotImplementedException();
+            if (model != null)
+            {
+                model.Concluir();
+                _atividadeRepo.Atualizar(model); 
+                return await _atividadeRepo.SalvarMudancasAsync();
+            }
+            return false;
         }
 
-        public Task<bool> DeletarAtividade(int AtividadeId)
+        public async Task<bool> DeletarAtividade(int atividadeId)
         {
-            throw new NotImplementedException();
+            var atividade = _atividadeRepo.PegarPorIdAsync(atividadeId);
+            if (atividade == null) throw new Exception("Essa atividade não existe");
+
+            _atividadeRepo.Deletar(atividade);
+
+            return await _atividadeRepo.SalvarMudancasAsync(); 
         }
 
-        public Task<Atividade> PegarAtividadePorIdAsync(int AtividadeId)
+        public async Task<Atividade> PegarAtividadePorIdAsync(int atividadeId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var atividade = await _atividadeRepo.PegarPorIdAsync(atividadeId); 
+                if (atividade == null)
+                {
+                    return null; 
+                }
+
+                return atividade; 
+            }
+            catch (Exception e)
+            {
+
+                throw new Exception(e.Message); 
+            }
         }
 
-        public Task<IEnumerable<Atividade>> PegarTodasAtividadesAsync(Atividade model)
+        public async Task<IEnumerable<Atividade>> PegarTodasAtividadesAsync()
         {
-            throw new NotImplementedException();
+            try
+            {
+                var atividades = await _atividadeRepo.PegarTodasAsync();
+                if (atividades == null)
+                {
+                    return null; 
+                }
+                return atividades; 
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message); 
+            }
         }
     }
 }
