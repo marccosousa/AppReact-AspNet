@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using ProAtividade.API.Data;
+using ProAtividade.Data.Context;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);

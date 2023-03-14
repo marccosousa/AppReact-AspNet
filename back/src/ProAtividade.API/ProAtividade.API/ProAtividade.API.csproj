@@ -21,4 +21,9 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ProAtividade.Data\ProAtividade.Data.csproj" />
+    <ProjectReference Include="..\ProAtividade.Domain\ProAtividade.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
