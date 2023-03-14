@@ -11,17 +11,30 @@ namespace ProAtividade.Domain.Services
 {
     public class AtividadeService : IAtividadeService
     {
-        private readonly IAtividadeRepo _atividade;
-        private readonly IGeralRepo _geralRepo;
+        private readonly IAtividadeRepo _atividadeRepo;
 
-        public AtividadeService(IAtividadeRepo atividadeRepo, IGeralRepo geralRepo)
+        public AtividadeService(IAtividadeRepo atividadeRepo)
         {
-            _atividade = atividadeRepo;
-            _geralRepo = geralRepo;
+            _atividadeRepo = atividadeRepo;
         }
-        public Task<Atividade> AdicionarAtividade(Atividade model)
+        public async Task<Atividade> AdicionarAtividade(Atividade model)
         {
-            throw new NotImplementedException();
+            if (await _atividadeRepo.PegarPorTituloAsync(model.Titulo) != null)
+            {
+                throw new Exception("Já existe uma atividade com esse título"); 
+            }
+
+            if (await _atividadeRepo.PegarPorIdAsync(model.Id) == null)
+            {
+                _atividadeRepo.Adicionar(model); 
+                
+                if(await _atividadeRepo.SalvarMudancasAsync())
+                {
+                    return model; 
+                }
+            }
+
+            return null; 
         }
 
         public Task<Atividade> Atualizar(Atividade model)

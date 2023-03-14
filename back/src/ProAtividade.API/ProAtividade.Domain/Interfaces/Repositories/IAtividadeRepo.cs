@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace ProAtividade.Domain.Interfaces.Repositories
 {
-    public interface IAtividadeRepo
+    public interface IAtividadeRepo : IGeralRepo
     {
         Task<IEnumerable<Atividade>> PegarTodasAsync();
-        Task<Atividade> PegarPorIdAsync();
-        Task<Atividade> PegarPorTituloAsync();
+        Task<Atividade> PegarPorIdAsync(int atividadeId);
+        Task<Atividade> PegarPorTituloAsync(string? titulo);
     }
 }
