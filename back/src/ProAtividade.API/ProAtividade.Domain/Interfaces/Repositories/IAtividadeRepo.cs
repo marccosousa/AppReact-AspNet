@@ -10,7 +10,7 @@ namespace ProAtividade.Domain.Interfaces.Repositories
     public interface IAtividadeRepo
     {
         Task<IEnumerable<Atividade>> PegarTodasAsync();
-        Task<IEnumerable<Atividade>> PegarPorIdAsync();
-        Task<IEnumerable<Atividade>> PegarPorTituloAsync();
+        Task<Atividade> PegarPorIdAsync();
+        Task<Atividade> PegarPorTituloAsync();
     }
 }
